@@ -1,11 +1,27 @@
-name: ci-workflow
+name: Node CI
+
 on: push
+
+env:
+  CI:true
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: используем Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: установка зависимостей
         run: make setup
@@ -15,3 +31,5 @@ jobs:
 
       - name: запуск тестов
         run: make test
+
+      - uses: hexlet-components/hello-from-hexlet-action@release
